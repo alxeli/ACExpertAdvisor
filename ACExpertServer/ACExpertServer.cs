@@ -107,10 +107,10 @@ namespace ACExpertServer
             // number of losses orders without a break
             int losses = 0;
 
-            //---- select lot size
+            // select lot size
             double lot = NormalizeDouble(AccountFreeMargin() * MaximumRisk / 1000.0, 1);
 
-            //---- calcuulate number of losses orders without a break
+            // calcuulate number of losses orders without a break
             if (DecreaseFactor > 0)
             {
                 bool isDone = false;
@@ -137,7 +137,7 @@ namespace ACExpertServer
                 if (losses > 1) lot = NormalizeDouble(lot - lot * losses / DecreaseFactor, 1);
             }
 
-            //---- return lot size
+            // return lot size
             if (lot < 0.1)
             {
                 lot = 0.1;
@@ -148,20 +148,20 @@ namespace ACExpertServer
         //Check for open order conditions                 
         void CheckForOpen(string symbol)
         {
-            //---- go trading only for first tiks of new bar
+            // go trading only for first tiks of new bar
             if (Volume[0] <= 1)
             {
-                //---- get Moving Average 
+                // get Moving Average 
                 double ma = iMA(symbol, 0, MovingPeriod, MovingShift, MODE_SMA, PRICE_CLOSE, 0);
 
-                //---- sell conditions
+                // sell conditions
                 if (Open[1] > ma && Close[1] < ma)
                 {
                     OrderSend(Symbol(), OP_SELL, LotsOptimized(), Bid, 3, 0, 0, "", MAGICMA, DateTime.MinValue, Color.Red);
                     SendMessage("Sell: " + Bid.ToString());
                 }
 
-                //---- buy conditions
+                // buy conditions
                 else if (Open[1] < ma && Close[1] > ma)
                 {
                     OrderSend(Symbol(), OP_BUY, LotsOptimized(), Ask, 3, 0, 0, "", MAGICMA, DateTime.MinValue, Color.Blue);
@@ -174,10 +174,10 @@ namespace ACExpertServer
         void CheckForClose(string symbol)
         {
 
-            //---- go trading only for first tiks of new bar
+            // go trading only for first tiks of new bar
             if (Volume[0] > 1) return;
 
-            //---- get Moving Average 
+            // get Moving Average 
             double ma = iMA(symbol, 0, MovingPeriod, MovingShift, MODE_SMA, PRICE_CLOSE, 0);
 
             bool isDone = false;
@@ -193,7 +193,7 @@ namespace ACExpertServer
                     continue;
                 }
 
-                //---- check order type 
+                // check order type 
                 if (OrderType() == OP_BUY)
                 {
                     if (Open[1] > ma && Close[1] < ma)
@@ -214,18 +214,15 @@ namespace ACExpertServer
         //this function gets called in a loop while trading is active
         public override int start()
         {
-            //---- check for history and trading
+            // check for history and trading
             if (Bars < 100 || !IsTradeAllowed() || !isTradingEnabled)
             {
 
                 return 0;
             }
 
-            //---- calculate open orders by current symbol
+            // calculate open orders by current symbol
             string symbol = Symbol();
-
-            //Display(symbol);
-
 
             if (CalculateCurrentOrders() == 0)
             {
