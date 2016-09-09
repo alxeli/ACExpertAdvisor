@@ -1,5 +1,5 @@
 # ACExpertAdvisor
-A C#.NET dynamic expert advisor with GUI app for realtime auto-trading algorithm adjustment
+A C#.NET dynamic expert advisor GUI app for realtime auto-trading algorithm execution and adjustment.
 
 MetaTrader 4 allows the creation and execution of automatic currency trading algorithms called expert advisors.
 These expert advisors are written in MQL, a proprietary C-based scripting language created by the MetaTrader 4 platform.
