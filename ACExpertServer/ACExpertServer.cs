@@ -24,9 +24,13 @@ namespace ACExpertServer
     public class ACExpert : MqlApi
     {
         const int MAGICMA = 20050610; //magic number to identify trade origin
-        int MovingPeriod = 2; //moving average variable
-        int MovingShift = 6; //moving average variable
         bool isTradingEnabled = true;
+
+        /*EA-specific*********************************************************/
+        int MovingPeriod = 2; //moving average variable
+        int MovingShift = 6; //moving average variable       
+        /*EA-specific*********************************************************/
+
 
         NamedPipeServer<string> server;// = new NamedPipeServer<string>("Demo123");
 
@@ -78,6 +82,8 @@ namespace ACExpertServer
 
         #region NQuotes Functions
 
+
+        /*EA-specific*********************************************************/
         int CalculateCurrentOrders()
         {
             int buys = 0, sells = 0;
@@ -209,6 +215,7 @@ namespace ACExpertServer
                 }
             }
         }
+        /*EA-specific*********************************************************/
 
         //this function gets called in a loop while trading is active
         public override int start()
