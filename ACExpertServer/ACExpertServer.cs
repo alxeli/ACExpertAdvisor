@@ -234,6 +234,7 @@ namespace ACExpertServer
 
             return 0;
         }
+        //TODO: ensure proper client initialization when client connects after init() was called (while the EA is running)
         public override int init()
         {
             server = new NamedPipeServer<string>("Demo123");

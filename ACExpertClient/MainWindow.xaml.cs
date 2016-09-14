@@ -23,7 +23,6 @@ namespace ACExpertClient
     {
         NamedPipeClient<string> client = new NamedPipeClient<string>("Demo123");
         bool isTrading = true;
-        bool isServerRunning = false;
 
         public MainWindow()
         {
@@ -35,7 +34,6 @@ namespace ACExpertClient
             {
                 InterpretServerMessage(conn, message);
             };
-
             client.Start();
         }
         void InterpretServerMessage(NamedPipeConnection<string, string> conn, string message)
@@ -44,13 +42,11 @@ namespace ACExpertClient
             {
                 case "!s_start":
                     {
-                        isServerRunning = true;
                         uxStartTrading_Toggle(true);
                     }
                     break;
                 case "!s_stop":
                     {
-                        isServerRunning = false;
                         uxStartTrading_Toggle(false);
                     }
                     break;
