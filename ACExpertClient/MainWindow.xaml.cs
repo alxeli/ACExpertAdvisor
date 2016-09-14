@@ -23,18 +23,51 @@ namespace ACExpertClient
     {
         NamedPipeClient<string> client = new NamedPipeClient<string>("Demo123");
         bool isTrading = true;
+        bool isServerRunning = false;
 
         public MainWindow()
         {
             InitializeComponent();
+            uxStartTrading.IsEnabled = false;
 
             //Set event handler for recieving ACExpert server messages
             client.ServerMessage += delegate (NamedPipeConnection<string, string> conn, string message)
             {
-                DisplayToConsole(message + "\n");
+                InterpretServerMessage(conn, message);
             };
 
             client.Start();
+        }
+        void InterpretServerMessage(NamedPipeConnection<string, string> conn, string message)
+        {
+            switch (message)
+            {
+                case "!s_start":
+                    {
+                        isServerRunning = true;
+                        uxStartTrading_Toggle(true);
+                    }
+                    break;
+                case "!s_stop":
+                    {
+                        isServerRunning = false;
+                        uxStartTrading_Toggle(false);
+                    }
+                    break;
+                default:
+                    {
+                        DisplayToConsole(message + "\n");
+                    }
+                    break;
+            }
+        }
+
+        private void uxStartTrading_Toggle(bool status)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                uxStartTrading.IsEnabled = status;
+            });
         }
 
         /// <summary>
@@ -56,17 +89,17 @@ namespace ACExpertClient
         {
             if (!isTrading)
             {
-                client.PushMessage("!start");
+                client.PushMessage("!c_start");
                 uxStartTrading.Content = "Stop Trading";
                 DisplayToConsole("Trading Started.\n");
             }
             else
             {
-                client.PushMessage("!stop");
+                client.PushMessage("!c_stop");
                 uxStartTrading.Content = "Start Trading";
                 DisplayToConsole("Trading Stopped.\n");
             }
-
+            
             isTrading = !isTrading;
         }
     }

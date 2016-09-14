@@ -28,19 +28,19 @@ namespace ACExpertServer
         int MovingShift = 6; //moving average variable
         bool isTradingEnabled = true;
 
-        NamedPipeServer<string> server = new NamedPipeServer<string>("Demo123");
+        NamedPipeServer<string> server;// = new NamedPipeServer<string>("Demo123");
 
         /// <summary>
         ///     Set event handler for recieving client messages
         /// </summary>
         public ACExpert()
         {
-            server.ClientMessage += delegate (NamedPipeConnection<string, string> conn, string message)
-            {
-                InterpretClientMessage(conn, message);
-            };
+            //server.ClientMessage += delegate (NamedPipeConnection<string, string> conn, string message)
+            //{
+            //    InterpretClientMessage(conn, message);
+            //};
 
-            server.Start();
+            //server.Start();
         }
 
         /// <summary>
@@ -50,12 +50,12 @@ namespace ACExpertServer
         {
             switch (message)
             {
-                case "!start":
+                case "!c_start":
                     {
                         isTradingEnabled = true;
                     }
                     break;
-                case "!stop":
+                case "!c_stop":
                     {
                         isTradingEnabled = false;
                     }
@@ -173,7 +173,6 @@ namespace ACExpertServer
         //Check for close order conditions          
         void CheckForClose(string symbol)
         {
-
             // go trading only for first tiks of new bar
             if (Volume[0] > 1) return;
 
@@ -234,6 +233,30 @@ namespace ACExpertServer
             }
 
             return 0;
+        }
+        public override int init()
+        {
+            server = new NamedPipeServer<string>("Demo123");
+
+            server.ClientMessage += delegate (NamedPipeConnection<string, string> conn, string message)
+            {
+                InterpretClientMessage(conn, message);
+            };
+
+            server.Start();
+            Thread.Sleep(1000);
+            
+            SendMessage("!s_start");
+            return base.init();
+        }
+        public override int deinit()
+        {
+            SendMessage("!s_stop");
+
+            Thread.Sleep(1000);
+            server.Stop();
+
+            return base.deinit();
         }
 
         #endregion
